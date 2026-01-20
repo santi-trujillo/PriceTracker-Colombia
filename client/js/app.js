@@ -50,9 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
 
-      if (data.results) {
+      if (Array.isArray(data.results)) {
         currentResults = data.results;
         renderResults(currentResults, query);
+      } else {
+        throw new Error("Invalid response format");
       }
     } catch (error) {
       if (error.name === "AbortError") {
@@ -90,12 +92,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function sortResults(type) {
     if (!currentResults.length) return;
 
-    let sorted = [...currentResults];
-    if (type === "price-asc") {
-      sorted.sort((a, b) => a.price - b.price);
-    } else if (type === "price-desc") {
-      sorted.sort((a, b) => b.price - a.price);
-    }
+    const sorted = currentResults.slice();
+    const sortFn =
+      type === "price-desc"
+        ? (a, b) => b.price - a.price
+        : (a, b) => a.price - b.price;
+
+    sorted.sort(sortFn);
     renderResults(sorted);
   }
 
@@ -115,9 +118,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Find min price to highlight
     const minPrice = Math.min(
-      ...products.map((p) => p.price).filter((p) => p > 0)
+      ...products.map((p) => p.price).filter((p) => p > 0),
     );
 
     const frag = document.createDocumentFragment();
@@ -127,7 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("div");
       card.className = `product-card ${isBestPrice ? "best-price" : ""}`;
 
-      // Image Container
       const imgContainer = document.createElement("div");
       imgContainer.className = "card-image-container";
 
@@ -135,9 +136,11 @@ document.addEventListener("DOMContentLoaded", () => {
       badge.className = "store-badge";
       badge.textContent = product.store;
       const badgeStyle = getStoreColor(product.store);
-      badge.style.cssText = `background-color: ${badgeStyle.split(";")[0]}; ${
-        badgeStyle.split(";")[1] || ""
-      }`;
+      const [bgColor, textColor] = badgeStyle.split(";");
+      badge.style.backgroundColor = bgColor.trim();
+      if (textColor) {
+        badge.style.color = textColor.replace("color:", "").trim();
+      }
 
       const img = document.createElement("img");
       img.src =
@@ -156,7 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
       imgContainer.appendChild(badge);
       imgContainer.appendChild(img);
 
-      // Content Container
       const content = document.createElement("div");
       content.className = "card-content";
 
@@ -209,11 +211,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function getStoreColor(storeName) {
     const colors = {
       MercadoLibre: "#ffe600; color: #333",
-      Amazon: "#ff9900",
+      Amazon: "#ff9900; color: #fff",
       Falabella: "#a5d802; color: #333",
       Éxito: "#ffe600; color: #333",
-      Alkosto: "#eb5e28",
+      Alkosto: "#eb5e28; color: #fff",
     };
-    return colors[storeName] || "#333";
+    return colors[storeName] || "#333; color: #fff";
   }
 });

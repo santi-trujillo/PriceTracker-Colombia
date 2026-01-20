@@ -1,24 +1,27 @@
 {
   "name": "pricetracker-colombia",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Aplicación web para rastrear y comparar precios de productos en tiendas colombianas",
+  "main": "server/index.js",
   "scripts": {
     "test": "node scripts/test-smoke.js",
     "start": "node server/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["price", "tracker", "colombia", "scraper", "ecommerce"],
+  "author": "Santiago Trujillo",
+  "license": "MIT",
   "dependencies": {
-    "axios": "^1.6.7",
-    "cheerio": "^1.1.2",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "express-rate-limit": "^8.2.1",
-    "helmet": "^8.1.0",
-    "puppeteer": "^24.33.0",
-    "user-agents": "^1.1.669"
+    "axios": "1.6.7",
+    "cheerio": "1.0.0-rc.12",
+    "cors": "2.8.5",
+    "dotenv": "16.4.5",
+    "express": "4.18.2",
+    "express-rate-limit": "7.1.5",
+    "helmet": "7.1.0",
+    "puppeteer": "24.15.0",
+    "user-agents": "1.1.250"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

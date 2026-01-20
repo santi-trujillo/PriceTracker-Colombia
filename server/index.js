@@ -23,7 +23,7 @@ app.use(
       },
     },
     crossOriginEmbedderPolicy: false,
-  })
+  }),
 );
 
 const limiter = rateLimit({
@@ -51,7 +51,7 @@ const falabellaScraper = require("./scrapers/falabella");
 const alkostoScraper = require("./scrapers/alkosto");
 
 app.post("/api/search", async (req, res) => {
-  const { query } = req.body;
+  const { query } = req.body || {};
 
   if (!query || typeof query !== "string") {
     return res.status(400).json({ error: "Query parameter is required" });
@@ -70,13 +70,22 @@ app.post("/api/search", async (req, res) => {
   logger.info(`Searching`, { query: safeQuery });
 
   try {
-    const results = await Promise.allSettled([
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Global search timeout")),
+        config.server.globalTimeout,
+      ),
+    );
+
+    const searchPromise = Promise.allSettled([
       amazonScraper.search(safeQuery),
       mlScraper.search(safeQuery),
       exitoScraper.search(safeQuery),
       falabellaScraper.search(safeQuery),
       alkostoScraper.search(safeQuery),
     ]);
+
+    const results = await Promise.race([searchPromise, timeoutPromise]);
 
     let allProducts = [];
     results.forEach((result) => {
@@ -110,19 +119,27 @@ const server = app.listen(PORT, async () => {
   }
 });
 
-process.on("SIGINT", async () => {
-  logger.info("SIGINT signal received");
-  server.close(async () => {
-    await browserManager.close();
-    logger.info("Server and browser closed");
-    process.exit(0);
-  });
-});
+const gracefulShutdown = async (signal) => {
+  logger.info(`${signal} signal received`);
 
-process.on("SIGTERM", async () => {
-  logger.info("SIGTERM signal received");
+  const timeout = setTimeout(() => {
+    logger.error("Forced shutdown after timeout");
+    process.exit(1);
+  }, 10000);
+
   server.close(async () => {
-    await browserManager.close();
-    process.exit(0);
+    try {
+      await browserManager.close();
+      clearTimeout(timeout);
+      logger.info("Server and browser closed gracefully");
+      process.exit(0);
+    } catch (e) {
+      logger.error("Error during shutdown", e);
+      clearTimeout(timeout);
+      process.exit(1);
+    }
   });
-});
+};
+
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));

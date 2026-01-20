@@ -41,12 +41,14 @@
                 <form id="search-form" class="search-form">
                     <div class="input-wrapper">
                         <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            aria-hidden="true">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
+                        <label for="search-input" class="sr-only">Buscar productos</label>
                         <input type="text" id="search-input" placeholder="Ej: iPhone 15, Air Fryer, Tenis Nike..."
-                            autocomplete="off">
+                            aria-label="Buscar productos en tiendas colombianas" autocomplete="off" required>
                     </div>
                     <button type="submit" class="search-btn">
                         <span>Buscar</span>

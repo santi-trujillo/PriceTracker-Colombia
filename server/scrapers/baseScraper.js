@@ -36,16 +36,68 @@ class BaseScraper {
       if (retries > 0) {
         const delay =
           config.scraping.retryDelay *
-          (config.scraping.maxRetries - retries + 1);
+          Math.pow(2, config.scraping.maxRetries - retries);
         logger.warn(
           `[${this.platform}] Retrying in ${delay}ms... (${retries} left)`,
-          { error: error.message }
+          { error: error.message },
         );
         await new Promise((resolve) => setTimeout(resolve, delay));
         return this.fetchHtml(url, retries - 1);
       }
       logger.error(`[${this.platform}] Error exhausted retries`, error);
       return null;
+    }
+  }
+
+  async fetchWithPuppeteer(url, selector = null) {
+    const browserManager = require("../utils/browserManager");
+
+    let page = null;
+    try {
+      logger.info(`[${this.platform}] Launching Puppeteer`, { url });
+      page = await browserManager.getPage();
+
+      await page.setUserAgent(this.getRandomUserAgent());
+      await page.setViewport(config.scraping.viewport);
+
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: config.scraping.timeout.puppeteerNavigation,
+      });
+
+      if (selector) {
+        try {
+          await page.waitForSelector(selector, {
+            timeout: config.scraping.timeout.puppeteerSelector,
+          });
+        } catch (e) {
+          logger.warn(
+            `[${this.platform}] Selector '${selector}' timeout (continuing anyway)`,
+          );
+        }
+      }
+
+      const content = await page.content();
+      return cheerio.load(content);
+    } catch (error) {
+      logger.error(`[${this.platform}] Puppeteer error`, error);
+      return null;
+    } finally {
+      if (page) {
+        try {
+          await Promise.race([
+            page.close(),
+            new Promise((_, reject) =>
+              setTimeout(
+                () => reject(new Error("Page close timeout")),
+                config.scraping.timeout.pageClose,
+              ),
+            ),
+          ]);
+        } catch (e) {
+          logger.error(`[${this.platform}] Failed to close page`, e);
+        }
+      }
     }
   }
 }

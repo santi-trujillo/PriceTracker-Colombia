@@ -6,8 +6,9 @@ class MercadoLibreScraper extends BaseScraper {
   }
 
   async search(query) {
+    const logger = require("../utils/logger");
     const url = `https://listado.mercadolibre.com.co/${encodeURIComponent(
-      query
+      query,
     )}`;
     const $ = await this.fetchHtml(url);
 
@@ -15,9 +16,21 @@ class MercadoLibreScraper extends BaseScraper {
 
     const results = [];
 
-    let cards = $(".ui-search-layout__item");
-    if (cards.length === 0) cards = $(".poly-card");
-    if (cards.length === 0) cards = $(".andes-card");
+    const selectors = [".ui-search-layout__item", ".poly-card", ".andes-card"];
+
+    let cards = $();
+    for (const sel of selectors) {
+      cards = $(sel);
+      if (cards.length > 0) {
+        logger.info(`[MercadoLibre] Using selector: ${sel}`);
+        break;
+      }
+    }
+
+    if (cards.length === 0) {
+      logger.warn("[MercadoLibre] No products found with any selector");
+      return [];
+    }
 
     cards.slice(0, 10).each((i, el) => {
       const $el = $(el);

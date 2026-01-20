@@ -17,6 +17,7 @@
 > 💡 **Demo:** Busca productos como "iPhone 15", "Air Fryer", "Tenis Nike" y compara precios instantáneamente.
 
 ### Características principales:
+
 - ✅ Búsqueda en **5 tiendas simultáneamente**
 - ✅ Resultados en **tiempo real** (sin caché)
 - ✅ Destaca el **mejor precio** automáticamente
@@ -25,30 +26,31 @@
 
 ## 🚀 Características
 
-*   **Búsqueda Unificada:** Consulta simultánea en 5 tiendas:
-    *   Amazon
-    *   MercadoLibre
-    *   Falabella
-    *   Éxito
-    *   Alkosto
-*   **Tiempo Real:** Datos extraídos al instante (Scraping), sin bases de datos desactualizadas.
-*   **Diseño Premium:** Interfaz oscura, moderna y responsiva (Mobile-First).
-*   **Arquitectura Robusta:**
-    *   Backend en **Node.js/Express**.
-    *   **Browser Singleton** para optimización extrema de RAM.
-    *   **Security Hardening** (Helmet, CSP, Rate Limiting).
-    *   Tests automatizados y Logging estructurado.
+- **Búsqueda Unificada:** Consulta simultánea en 5 tiendas:
+  - Amazon
+  - MercadoLibre
+  - Falabella
+  - Éxito
+  - Alkosto
+- **Tiempo Real:** Datos extraídos al instante (Scraping), sin bases de datos desactualizadas.
+- **Diseño Premium:** Interfaz oscura, moderna y responsiva (Mobile-First).
+- **Arquitectura Robusta:**
+  - Backend en **Node.js/Express**.
+  - **Browser Singleton** para optimización extrema de RAM.
+  - **Security Hardening** (Helmet, CSP, Rate Limiting).
+  - Tests automatizados y Logging estructurado.
 
 ## 🛠️ Stack Tecnológico
 
-*   **Backend:** Node.js, Express.js
-*   **Scraping:** Puppeteer (Headless Chrome), Axios, Cheerio.
-*   **Frontend:** Vanilla Javascript, CSS3 (Variables, Flexbox/Grid).
-*   **Seguridad:** Helmet, Express-Rate-Limit.
+- **Backend:** Node.js, Express.js
+- **Scraping:** Puppeteer (Headless Chrome), Axios, Cheerio.
+- **Frontend:** Vanilla Javascript, CSS3 (Variables, Flexbox/Grid).
+- **Seguridad:** Helmet, Express-Rate-Limit.
 
 ## 📦 Instalación
 
 ### Requisitos previos
+
 - Node.js v18 o superior
 - npm o yarn
 - 2GB de RAM disponible (para Puppeteer)
@@ -76,13 +78,17 @@ npm start
 ## ▶️ Ejecución
 
 ### Modo Desarrollo
+
 ```bash
 npm start
 ```
+
 El servidor iniciará en `http://localhost:3000`.
 
 ### Tests
+
 Para verificar que el sistema está operativo:
+
 ```bash
 npm test
 ```
@@ -121,12 +127,13 @@ PriceTracker-Colombia/
 ## 🔒 Seguridad
 
 El proyecto implementa prácticas de seguridad estándar:
-*   ✅ Sanitización de inputs contra XSS
-*   ✅ CSP (Content Security Policy) estricta
-*   ✅ Rate Limiting (60 req/min por IP)
-*   ✅ Helmet.js para headers HTTP seguros
-*   ✅ Validación de URLs (solo HTTPS)
-*   ✅ Gestión segura de cookies y CORS
+
+- ✅ Sanitización de inputs contra XSS
+- ✅ CSP (Content Security Policy) estricta
+- ✅ Rate Limiting (60 req/min por IP)
+- ✅ Helmet.js para headers HTTP seguros
+- ✅ Validación de URLs (solo HTTPS)
+- ✅ Gestión segura de cookies y CORS
 
 ## 🤝 Contribución
 
@@ -139,6 +146,7 @@ El proyecto implementa prácticas de seguridad estándar:
 5. Abre un Pull Request
 
 ### Ideas para contribuir:
+
 - 🏪 Agregar más tiendas colombianas (Linio, Homecenter, etc.)
 - 📊 Implementar gráficos de historial de precios
 - 🔔 Sistema de alertas de precio
@@ -152,6 +160,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 ## 👨‍💻 Autor
 
 **Santiago Trujillo**
+
 - GitHub: [@santi-trujillo](https://github.com/santi-trujillo)
 - Proyecto: [PriceTracker Colombia](https://github.com/santi-trujillo/PriceTracker-Colombia)
 
